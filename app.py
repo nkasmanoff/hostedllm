@@ -20,7 +20,6 @@ def index():
 def llm_prompt():
     data = request.get_json(force=True)
     prompt = data['inputs']
-    # This will be super slow if it loads the model each time, even with checkpointing
     response = quantized_model(prompt=prompt)
     return jsonify(response)
 
