@@ -1,0 +1,12 @@
+langchain
+torch
+flask
+einops
+transformers
+accelerate
+scipy
+sentencepiece
+uvicorn
+tqdm
+xformers
+auto-gptq
