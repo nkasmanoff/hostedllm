@@ -1,30 +1,25 @@
-#flask hosted app for LLM
-
-from flask import Flask, request, jsonify
-from llama2 import HuggingFaceLLM
-from llama2_quantized import Llama7BQLLM
-
+from qllama2 import Llama7BQLLM
+from fastapi import FastAPI
+import uvicorn
+from flask import jsonify
 #llm_model = HuggingFaceLLM()
 quantized_model = Llama7BQLLM()
-app = Flask(__name__)
+
+base_url = 'http://localhost:8000'
+
+app = FastAPI()
 
 
-# set base route
-@app.route('/')
-def index():
-    return {'message': 'Welcome to the LLM API'}
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the floodbrain llama2 api on FASTAPI"}
 
-
-
-@app.route('/chat_llama', methods=['POST'])
-def llm_prompt():
-    data = request.get_json(force=True)
-    prompt = data['inputs']
+@app.post("/chat")
+async def request_chat(prompt:str ):
     response = quantized_model(prompt=prompt)
-    return jsonify(response)
+    return response
+
+
 
 if __name__ == '__main__':
-    app.run()
-
-
-
+    uvicorn.run(app)

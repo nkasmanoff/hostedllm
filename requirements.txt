@@ -9,4 +9,5 @@ sentencepiece
 uvicorn
 tqdm
 xformers
+fastapi
 auto-gptq
