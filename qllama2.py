@@ -4,9 +4,9 @@ from transformers import AutoTokenizer
 from auto_gptq import AutoGPTQForCausalLM
 
 
-class Llama7BQLLM():
+class Llama2QLLM():
     def __init__(self, verbose=False):
-        self.model_id = "TheBloke/Llama-2-7b-Chat-GPTQ"
+        self.model_id = "TheBloke/vicuna-13B-v1.5-GPTQ"
         self.model_basename = "gptq_model-4bit-128g"
         self.verbose = verbose
         self.pipeline, self.bare_model, self.tokenizer = self.load_pipeline()
@@ -23,7 +23,6 @@ class Llama7BQLLM():
     def __call__(self, prompt):
         prompt = self.blank_template.format(query_str=prompt)
         response = self.pipeline(prompt)
-
         return response
 
     def load_pipeline(self):
@@ -34,7 +33,7 @@ class Llama7BQLLM():
             model_basename=self.model_basename,
             use_safetensors=True,
             trust_remote_code=True,
-            device="cuda:0",
+            device_map="balanced_low_0",
             use_triton=False,
             quantize_config=None,
 
@@ -44,7 +43,8 @@ class Llama7BQLLM():
             "text-generation",
             model=bare_model,
             tokenizer=tokenizer,
-            temperature=0.0,
+            temperature=0.1,
+            max_new_tokens=1024,
             top_p=0.95,
             repetition_penalty=1.15
         )
@@ -54,7 +54,7 @@ class Llama7BQLLM():
 
 
 if __name__ == '__main__':
-    llm_model = Llama7BQLLM(verbose=True)
+    llm_model = Llama2QLLM(verbose=True)
 
     # example function call would be
     prompt = "Any weather events in the next 24 hours you think we should be aware of? For example, do any cities look like they might be in risk of flooding?"

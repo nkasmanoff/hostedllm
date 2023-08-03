@@ -1,9 +1,10 @@
-from qllama2 import Llama7BQLLM
+from qllama2 import Llama2QLLM
 from fastapi import FastAPI
 import uvicorn
 from flask import jsonify
+import torch
 #llm_model = HuggingFaceLLM()
-quantized_model = Llama7BQLLM()
+quantized_model = Llama2QLLM()
 
 base_url = 'http://localhost:8000'
 
@@ -16,6 +17,7 @@ def read_root():
 
 @app.post("/chat")
 async def request_chat(prompt:str ):
+    torch.cuda.empty_cache()
     response = quantized_model(prompt=prompt)
     return response
 
